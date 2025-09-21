@@ -47,6 +47,8 @@ base AS (
   JOIN DimDate d ON d.calendar_date BETWEEN e.HireDate AND ISNULL(e.TerminationDate, '9999-12-31')
 ),
 /* Attach leave days */
+/* We mark leave_day_flag = 1 if any LeaveDay exists, 
+   while leave_hours sum only VALID days. */
 lv AS (
   SELECT
     d.date_key,
@@ -92,4 +94,5 @@ SELECT
   b.termination_flag
 FROM base b
 LEFT JOIN lv l
+
   ON l.date_key = b.date_key AND l.employee_key = b.employee_key;
